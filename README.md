@@ -109,17 +109,17 @@ Every resource used in this project is **completely free**. Here is what you wil
 
 | Resource | Purpose | Free Tier Details |
 |---|---|---|
-| **Amadeus for Developers** | Flight search (American Airlines + all carriers to MCO) | 2,000 API calls/month free on test environment |
+| **Serpapi** (Google Flights engine) | Flight search — queries real Google Flights data | 100 searches/month free |
 | **Google Sheets API** | Read inputs / write results to your spreadsheet | Free with a Google account |
 | **Google Drive API** | Required alongside Sheets API for authentication | Free with a Google account |
 | **gspread** (Python library) | Python wrapper to interact with Google Sheets | Free open-source library |
-| **requests** (Python library) | HTTP requests for web scraping | Free open-source library |
+| **requests** (Python library) | HTTP requests for flight API and web scraping | Free open-source library |
 | **BeautifulSoup4** (Python library) | Parse HTML from Disney/Universal/hotel sites | Free open-source library |
 | **python-dotenv** (Python library) | Load API keys from a `.env` file safely | Free open-source library |
 | **rich** (Python library) | Pretty terminal output while the script runs | Free open-source library |
 | **PythonAnywhere** *(optional)* | Host and schedule the script in the cloud | Free hobby tier available |
 
-> **Amadeus Note:** The free tier uses a **test environment** with simulated (but realistic) flight data. This is perfectly fine for planning and cost estimation. Real live data requires a paid production key.
+> **Serpapi Note:** The free tier provides 100 real searches/month against live Google Flights data. Mode 1 uses ~50 calls, Mode 2 uses ~15, Mode 3 uses 1 — well within the free limit for normal trip planning use.
 
 ---
 
@@ -141,13 +141,13 @@ Before starting, make sure you have the following:
 Once Python is installed, run the following command in your terminal:
 
 ```bash
-pip install gspread google-auth requests beautifulsoup4 python-dotenv rich amadeus
+pip install gspread google-auth requests beautifulsoup4 python-dotenv rich
 ```
 
 To confirm all libraries installed successfully, run:
 
 ```bash
-pip show gspread amadeus beautifulsoup4
+pip show gspread requests beautifulsoup4
 ```
 
 ---
@@ -589,33 +589,26 @@ Copy the long string between `/d/` and `/edit` — you will need it in the next 
 
 ---
 
-## 8. Amadeus API Setup
+## 8. Serpapi Setup
 
-Amadeus provides a free flight search API that includes American Airlines routes.
+Serpapi is used for flight search. It queries real Google Flights data and returns live prices. The free tier gives 100 searches per month, which is enough for normal trip planning use.
+
+> **Why Serpapi instead of Amadeus?** The Amadeus for Developers self-service portal is being decommissioned on July 17th, 2026 and no longer accepts new registrations.
 
 ### Step 1 — Create an Account
 
-1. Go to https://developers.amadeus.com
+1. Go to https://serpapi.com
 2. Click **Register** and create a free account
 3. Verify your email address
 
-### Step 2 — Create an App
+### Step 2 — Get Your API Key
 
-1. Once logged in, go to **My Apps** in the top menu
-2. Click **Create new app**
-3. Name it `Disney Trip Planner`
-4. Click **Create**
+1. Once logged in, go to your **Dashboard**
+2. Your API key is shown on the dashboard — copy it
 
-### Step 3 — Get Your API Keys
+### Step 3 — Add It to Your `.env` File
 
-After creating the app you will see:
-
-- **API Key** (also called Client ID)
-- **API Secret** (also called Client Secret)
-
-Copy both of these — you will add them to your `.env` file next.
-
-> **Note:** By default your app is in the **Test environment**, which uses simulated data. This is free and has no time limit. It is sufficient for trip planning purposes.
+Paste the key into your `.env` file (see Section 9). That is all the setup required — no app creation needed.
 
 ---
 
@@ -624,11 +617,7 @@ Copy both of these — you will add them to your `.env` file next.
 Your `.env` file stores all secrets and configuration. It should look like this:
 
 ```env
-# Amadeus API
-AMADEUS_API_KEY=your_amadeus_api_key_here
-AMADEUS_API_SECRET=your_amadeus_api_secret_here
-
-# Google Sheets
+SERPAPI_KEY=your_serpapi_key_here
 GOOGLE_SHEET_ID=your_sheet_id_here
 GOOGLE_CREDENTIALS_FILE=credentials.json
 ```
@@ -699,12 +688,12 @@ The free tier allows 2,000 calls per month. Mode 1 makes approximately 48–72 c
 ---
 
 ### `flights.py`
-Uses the **Amadeus Python SDK** to search for flights. Responsible for:
+Uses the **Serpapi Google Flights engine** to search for real flight prices. Responsible for:
 - Accepting the origin airport code, travel dates, and number of travelers
-- Calling the Amadeus `shopping.flight_offers_search.get()` endpoint
-- Filtering results to prioritize American Airlines (`AA`) carrier code where available
-- Extracting flight number, departure time, arrival time, and price per person
+- Calling the Serpapi `google_flights` engine with the origin/destination IATA pair
+- Extracting flight number, departure time, arrival time, stops, duration, and price per person
 - Returning a list of the top results formatted and ready to write to the sheet
+- `get_sample_price()` — lightweight variant used by `price_explorer.py` to sample prices for the Mode 1 and Mode 2 grids without pulling full flight detail
 
 ---
 
@@ -1106,8 +1095,8 @@ If you want the script to run in the cloud so you do not need to keep your compu
 
 | Area | Limitation | Notes |
 |---|---|---|
-| **Flights** | Amadeus test environment uses simulated data | Prices are realistic estimates but not live fares. Sufficient for planning. |
-| **Flights** | 2,000 API calls/month on free tier | Each run uses ~1 call. Running daily for a month = 30 calls. Well within limits. |
+| **Flights** | Serpapi queries real Google Flights data | Prices are live fares — accurate for planning. |
+| **Flights** | 100 searches/month on free tier | Mode 1 uses ~50, Mode 2 uses ~15, Mode 3 uses 1. Well within limits for normal use. |
 | **Hotels** | No official free Disney or Universal hotel API | Relies on web scraping a travel aggregator. On-site perks (Early Entry, Express Pass) are tagged from the hardcoded hotel knowledge in `hotels.py` rather than scraped, since they are consistent and rarely change |
 | **Hotels** | Distance calculations are approximate | Distances to park gates are estimated from known coordinates, not live mapping data |
 | **Rides** | No public ride API exists | Ride lists and fast-pass eligibility are maintained manually in `data/disney_rides.py` and `data/universal_rides.py` |
@@ -1129,7 +1118,7 @@ With this README as your guide, the build order is:
 
 1. Complete Google Cloud Setup (Section 6)
 2. Set up your Google Sheet tabs and layout (Section 7)
-3. Create your Amadeus account and get keys (Section 8)
+3. Create your Serpapi account and get your API key (Section 8)
 4. Fill in your `.env` file (Section 9)
 5. Build `data/disney_rides.py` — seed the ride list from the Walt Disney World website
 6. Build `data/universal_rides.py` — seed the ride list from the Universal Orlando website

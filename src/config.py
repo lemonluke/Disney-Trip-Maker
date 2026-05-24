@@ -4,8 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ── API credentials ────────────────────────────────────────────────────────────
-AMADEUS_API_KEY = os.getenv("AMADEUS_API_KEY")
-AMADEUS_API_SECRET = os.getenv("AMADEUS_API_SECRET")
+SERPAPI_KEY = os.getenv("SERPAPI_KEY")
 GOOGLE_SHEET_ID = os.getenv("GOOGLE_SHEET_ID")
 GOOGLE_CREDENTIALS_FILE = os.getenv("GOOGLE_CREDENTIALS_FILE", "credentials.json")
 
@@ -13,8 +12,9 @@ GOOGLE_CREDENTIALS_FILE = os.getenv("GOOGLE_CREDENTIALS_FILE", "credentials.json
 DESTINATION_AIRPORT = "MCO"
 
 # ── Date format ────────────────────────────────────────────────────────────────
-DATE_FORMAT = "%Y-%m-%d"
-MONTH_FORMAT = "%Y-%m"
+DATE_FORMAT = "%m/%d/%Y"
+MONTH_FORMAT = "%m/%Y"
+DATE_FORMAT_API = "%Y-%m-%d"   # Serpapi requires YYYY-MM-DD regardless of user input format
 
 # ── Flight search ──────────────────────────────────────────────────────────────
 MAX_FLIGHT_RESULTS = 5
