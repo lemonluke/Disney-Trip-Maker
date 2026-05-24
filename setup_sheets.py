@@ -246,21 +246,34 @@ def setup_explore(spreadsheet):
     ws = spreadsheet.worksheet("1 - Explore")
     ws.clear()
     sid = ws.id
-    ws.update("A1:G2", [
-        ["24-Month Price Overview", "", "", "", "", "", ""],
-        ["Month", "Season", "Avg Flight (pp)", "Avg Hotel/night", "Parks (pp)", "Est. Trip Total (pp)", "Notes"],
+    ws.update("A1:K3", [
+        ["24-Month Price Overview", "", "", "", "", "", "", "", "", "", ""],
+        ["Month", "Season", "Avg Flight (pp)", "Avg Hotel/night", "Parks (pp)",
+         "Est. Trip Total (pp)", "Notes", "Weather", "EPCOT Festival",
+         "After-Hours Events", "Planning Tip"],
+        ["~ = estimated (airline seats not yet on sale for this date)", "", "", "", "", "", "", "", "", "", ""],
     ])
 
-    # Data rows 3-26 (0-indexed 2-26), all 7 columns A-G
-    DATA = (2, 0, 26, 7)
+    # Data rows 4-27 (0-indexed 3-27), all 11 columns A-K
+    DATA = (3, 0, 27, 11)
 
     requests = [
         col_width(sid, 0, 120), col_width(sid, 1, 110), col_width(sid, 2, 150),
         col_width(sid, 3, 150), col_width(sid, 4, 110), col_width(sid, 5, 180),
-        col_width(sid, 6, 300),
-        bg_format(sid, 0, 0, 1, 7, TITLE_BG, TITLE_FG, bold=True),
-        bg_format(sid, 1, 0, 2, 7, SECTION_BG, SECTION_FG, bold=True),
-        freeze(sid, rows=2),
+        col_width(sid, 6, 280),
+        col_width(sid, 7, 220),   # Weather
+        col_width(sid, 8, 230),   # EPCOT Festival
+        col_width(sid, 9, 280),   # After-Hours Events
+        col_width(sid, 10, 420),  # Planning Tip
+        bg_format(sid, 0, 0, 1, 11, TITLE_BG, TITLE_FG, bold=True),
+        bg_format(sid, 1, 0, 2, 11, SECTION_BG, SECTION_FG, bold=True),
+        # Legend row — italic grey
+        {"repeatCell": {
+            "range": cell_range(sid, 2, 0, 3, 11),
+            "cell": {"userEnteredFormat": {"textFormat": {
+                "italic": True, "foregroundColor": rgb(120, 120, 120)}}},
+            "fields": "userEnteredFormat.textFormat"}},
+        freeze(sid, rows=3),
 
         # ── Season row colouring (full row, based on column B) ────────────────
         # Peak — red  (added first = lowest CF priority)
@@ -274,11 +287,15 @@ def setup_explore(spreadsheet):
         cf_eq(sid,  2, 2, 26, 3, "No data", CF_GREY_BG, CF_GREY_FG),   # flight col
         cf_eq(sid,  2, 5, 26, 6, "No data", CF_GREY_BG, CF_GREY_FG),   # total col
 
-        # ── Notes column — red text for known high-demand labels ──────────────
+        # ── Notes column G — red/yellow for known high-demand labels ──────────
         cf_contains(sid, 2, 6, 26, 7, "peak",          CF_RED_BG,    CF_RED_FG),
         cf_contains(sid, 2, 6, 26, 7, "Christmas",     CF_RED_BG,    CF_RED_FG),
         cf_contains(sid, 2, 6, 26, 7, "Thanksgiving",  CF_YELLOW_BG, CF_YELLOW_FG),
         cf_contains(sid, 2, 6, 26, 7, "Spring Break",  CF_YELLOW_BG, CF_YELLOW_FG),
+
+        # ── After-Hours Events column J — amber when events present ───────────
+        cf_contains(sid, 3, 9, 27, 10, "MNSSHP",  CF_YELLOW_BG, CF_YELLOW_FG),
+        cf_contains(sid, 3, 9, 27, 10, "MVMCP",   CF_YELLOW_BG, CF_YELLOW_FG),
     ]
 
     spreadsheet.batch_update({"requests": requests})
@@ -300,9 +317,9 @@ def setup_month_view(spreadsheet):
     DATA = (2, 0, 6, 7)
 
     requests = [
-        col_width(sid, 0, 80),  col_width(sid, 1, 160), col_width(sid, 2, 160),
+        col_width(sid, 0, 180), col_width(sid, 1, 160), col_width(sid, 2, 160),
         col_width(sid, 3, 160), col_width(sid, 4, 150), col_width(sid, 5, 150),
-        col_width(sid, 6, 300),
+        col_width(sid, 6, 360),
         bg_format(sid, 0, 0, 1, 7, TITLE_BG, TITLE_FG, bold=True),
         bg_format(sid, 1, 0, 2, 7, SECTION_BG, SECTION_FG, bold=True),
         freeze(sid, rows=2),
@@ -320,12 +337,14 @@ def setup_month_view(spreadsheet):
         # ── "No data" cells — grey ────────────────────────────────────────────
         cf_eq(sid, 2, 4, 6, 5, "No data", CF_GREY_BG, CF_GREY_FG),
 
-        # ── Booking window section further down (rows 9+, 0-indexed 8+) ───────
-        # Status column E (index 4) in that section
-        cf_contains(sid, 8, 4, 50, 5, "OPEN",         CF_GREEN_BG,  CF_GREEN_FG),
-        cf_contains(sid, 8, 4, 50, 5, "Opens in",     CF_YELLOW_BG, CF_YELLOW_FG),
-        cf_contains(sid, 8, 4, 50, 5, "Day-of",       CF_BLUE_BG,   CF_BLUE_FG),
-        cf_contains(sid, 8, 4, 50, 5, "Available any",CF_PURPLE_BG, CF_PURPLE_FG),
+        # ── Section header rows — any row where col A starts with "──" ────────
+        cf_formula(sid, 0, 0, 60, 7, '=LEFT($A1,1)="─"', SECTION_BG, SECTION_FG, bold=True),
+
+        # ── Booking/Season section — status column E (index 4) ───────────────
+        cf_contains(sid, 8, 4, 60, 5, "OPEN",         CF_GREEN_BG,  CF_GREEN_FG),
+        cf_contains(sid, 8, 4, 60, 5, "Opens in",     CF_YELLOW_BG, CF_YELLOW_FG),
+        cf_contains(sid, 8, 4, 60, 5, "Day-of",       CF_BLUE_BG,   CF_BLUE_FG),
+        cf_contains(sid, 8, 4, 60, 5, "Available any",CF_PURPLE_BG, CF_PURPLE_FG),
     ]
 
     spreadsheet.batch_update({"requests": requests})

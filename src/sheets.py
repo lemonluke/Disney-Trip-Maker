@@ -1,6 +1,7 @@
 from datetime import datetime
 import gspread
 from google.oauth2.service_account import Credentials
+from src.data.season_details import SEASON_DETAILS
 from src.config import (
     GOOGLE_SHEET_ID,
     GOOGLE_CREDENTIALS_FILE,
@@ -139,24 +140,35 @@ def _header_row(labels: list[str]) -> list[str]:
 def write_explore_results(spreadsheet: gspread.Spreadsheet, rows: list[dict], origin: str) -> None:
     """
     rows: list of dicts with keys:
-      month_label, season, avg_flight, avg_hotel_night, park_estimate, trip_total, notes
+      month_label, season, avg_flight, avg_hotel_night, park_estimate, trip_total, notes,
+      weather, epcot_festival, after_hours, tip
     """
     ws = spreadsheet.worksheet(TAB_EXPLORE)
     _clear_sheet(ws)
 
-    header = [f"24-Month Price Overview — {origin} → Orlando (MCO)", "", "", "", "", "", ""]
-    subheader = ["Month", "Season", "Avg Flight (pp)", "Avg Hotel/night", "Parks (pp)", "Est. Trip Total (pp)", "Notes"]
+    header    = [f"24-Month Price Overview — {origin} → Orlando (MCO)", "", "", "", "", "", "", "", "", "", ""]
+    subheader = ["Month", "Season", "Avg Flight (pp)", "Avg Hotel/night", "Parks (pp)",
+                 "Est. Trip Total (pp)", "Notes", "Weather", "EPCOT Festival",
+                 "After-Hours Events", "Planning Tip"]
+    legend    = ["~ = estimated (airline seats not yet on sale for this date)", "", "", "", "", "", "", "", "", "", ""]
 
-    output = [header, subheader]
+    output = [header, subheader, legend]
     for r in rows:
+        est = r.get("is_estimated", False)
+        flight_str = f"~${r['avg_flight']:.0f}" if est else f"${r['avg_flight']:.0f}" if r.get("avg_flight") else "No data"
+        total_str  = f"~${r['trip_total']:.0f}"  if est else f"${r['trip_total']:.0f}"  if r.get("trip_total")  else "No data"
         output.append([
             r.get("month_label", ""),
             r.get("season", ""),
-            f"${r['avg_flight']:.0f}" if r.get("avg_flight") else "No data",
+            flight_str,
             f"${r['avg_hotel_night']:.0f}" if r.get("avg_hotel_night") else "—",
             f"${r['park_estimate']:.0f}" if r.get("park_estimate") else "—",
-            f"${r['trip_total']:.0f}" if r.get("trip_total") else "No data",
+            total_str,
             r.get("notes", ""),
+            r.get("weather", ""),
+            r.get("epcot_festival", ""),
+            r.get("after_hours") or "—",
+            r.get("tip", ""),
         ])
 
     _write_rows(ws, output)
@@ -170,6 +182,7 @@ def write_month_view_results(
     month_label: str,
     travelers: int,
     booking_results: list[dict],
+    month: int = 0,
 ) -> None:
     """
     weeks: list of dicts with keys:
@@ -185,15 +198,33 @@ def write_month_view_results(
     ]
 
     for w in weeks:
+        est = w.get("is_estimated", False)
+        flight_str = f"~${w['avg_flight']:.0f}" if est else f"${w['avg_flight']:.0f}" if w.get("avg_flight") else "No data"
         output.append([
             w.get("week_label", ""),
             w.get("date_range", ""),
-            w.get("cheapest_day", "—"),
-            w.get("priciest_day", "—"),
-            f"${w['avg_flight']:.0f}" if w.get("avg_flight") else "No data",
+            w.get("cheapest_day", "—") if not est else "—",
+            w.get("priciest_day", "—") if not est else "—",
+            flight_str,
             f"${w['avg_hotel_night']:.0f}" if w.get("avg_hotel_night") else "—",
             w.get("notes", ""),
         ])
+
+    # ── Season overview ────────────────────────────────────────────────────
+    sd = SEASON_DETAILS.get(month, {}) if month else {}
+    if sd:
+        output += [
+            [""],
+            ["── SEASON OVERVIEW ──", "", "", "", "", ""],
+            ["Weather",            sd.get("weather", ""),              "", "", "", ""],
+            ["EPCOT Festival",     sd.get("epcot_festival", ""),       "", "", "", ""],
+            ["After-Hours Events", sd.get("after_hours") or "None this month", "", "", "", ""],
+            ["Crowd Spikes",       sd.get("crowd_spikes", ""),         "", "", "", ""],
+            ["Park Hours",         sd.get("park_hours", ""),           "", "", "", ""],
+            ["Refurbishments",     sd.get("refurbs", ""),              "", "", "", ""],
+            ["Best Weeks",         sd.get("best_weeks", ""),           "", "", "", ""],
+            ["Planning Tip",       sd.get("tip", ""),                  "", "", "", ""],
+        ]
 
     output += [[""], ["── BOOKING WINDOWS (anchored to 1st of month) ──", "", "", "", "", ""]]
     output.append(["Item", "Opens", "Earliest Date", "Status", "Notes", ""])

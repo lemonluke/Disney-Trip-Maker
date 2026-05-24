@@ -92,14 +92,14 @@ def _run():
         report.print_status(f"Mode: Month View — {month_year}")
 
         from datetime import date as date_cls
-        month, year = int(month_year[:2]), int(month_year[3:])
+        month, year = (int(p) for p in month_year.split("/"))
         anchor = date_cls(year, month, 1)
         booking_results = calculate_booking_windows(anchor, anchor)
 
         weeks = price_explorer.build_month_view(origin, month_year, travelers)
         month_label = datetime.strptime(month_year, MONTH_FORMAT).strftime("%B %Y")
 
-        sheets.write_month_view_results(spreadsheet, weeks, month_label, travelers, booking_results)
+        sheets.write_month_view_results(spreadsheet, weeks, month_label, travelers, booking_results, month)
         sheets.write_last_run(spreadsheet)
         sheets.write_status(spreadsheet, MODE_MONTH_VIEW, "Done — see 2 - Month View sheet.")
 
