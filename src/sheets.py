@@ -217,6 +217,7 @@ def write_month_view_results(
             [""],
             ["── SEASON OVERVIEW ──", "", "", "", "", ""],
             ["Weather",            sd.get("weather", ""),              "", "", "", ""],
+            ["What to Pack",       sd.get("clothing", ""),             "", "", "", ""],
             ["EPCOT Festival",     sd.get("epcot_festival", ""),       "", "", "", ""],
             ["After-Hours Events", sd.get("after_hours") or "None this month", "", "", "", ""],
             ["Crowd Spikes",       sd.get("crowd_spikes", ""),         "", "", "", ""],
@@ -263,6 +264,12 @@ def write_full_plan_results(
     p1 = inputs.get("phase1_nights", "?")
     p2 = inputs.get("phase2_nights", "?")
 
+    try:
+        arrival_month = int(arrival.split("/")[0])
+    except (ValueError, AttributeError, IndexError):
+        arrival_month = 0
+    sd = SEASON_DETAILS.get(arrival_month, {})
+
     output = []
 
     # ── Trip summary ───────────────────────────────────────────────────────────
@@ -281,6 +288,22 @@ def write_full_plan_results(
             f"${summary.get('grand_total', 0):,.2f}", f"${summary.get('grand_total', 0) / t:,.2f}"],
         [""],
     ]
+
+    # ── Trip overview — season & packing ──────────────────────────────────────
+    if sd:
+        output += [
+            ["── TRIP OVERVIEW ──", "", ""],
+            ["Weather",            sd.get("weather", ""),                        ""],
+            ["What to Pack",       sd.get("clothing", ""),                       ""],
+            ["EPCOT Festival",     sd.get("epcot_festival", ""),                 ""],
+            ["After-Hours Events", sd.get("after_hours") or "None this month",   ""],
+            ["Crowd Spikes",       sd.get("crowd_spikes", ""),                   ""],
+            ["Park Hours",         sd.get("park_hours", ""),                     ""],
+            ["Refurbishments",     sd.get("refurbs", ""),                        ""],
+            ["Best Weeks",         sd.get("best_weeks", ""),                     ""],
+            ["Planning Tip",       sd.get("tip", ""),                            ""],
+            [""],
+        ]
 
     # ── Flights ────────────────────────────────────────────────────────────────
     output += [

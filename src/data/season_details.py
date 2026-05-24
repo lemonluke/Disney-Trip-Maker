@@ -14,6 +14,11 @@ SEASON_DETAILS = {
         "park_hours":     "Short — parks close 9–10pm most nights",
         "refurbs":        "Peak refurb season — several rides closed for maintenance",
         "best_weeks":     "Jan 2–14 (quietest stretch of the entire year)",
+        "clothing": (
+            "Jacket or heavy hoodie required — evenings can dip to 55°F · "
+            "T-shirts and jeans for daytime · Light rain jacket · "
+            "Comfortable waterproof walking shoes"
+        ),
         "tip": (
             "Jan 2–14 is the single best value window of the year — extremely low crowds, "
             "short waits, and no need for Lightning Lane Multi Pass on most rides. "
@@ -30,6 +35,11 @@ SEASON_DETAILS = {
         "park_hours":     "Short — parks close 9–10pm most nights",
         "refurbs":        "Refurb season continues — check ride closures before booking",
         "best_weeks":     "Feb 1–14 (before Presidents' Day crowds build)",
+        "clothing": (
+            "Light jacket or cardigan for mornings and evenings · "
+            "T-shirts for warm afternoons · Layers are ideal — temps swing 15°F+ during the day · "
+            "Light rain jacket"
+        ),
         "tip": (
             "Early February is very quiet and the weather starts to feel genuinely pleasant. "
             "Flower and Garden begins late Feb — a good reason to prioritise EPCOT. "
@@ -46,6 +56,11 @@ SEASON_DETAILS = {
         "park_hours":     "Extended around Spring Break — parks open until 11pm–midnight",
         "refurbs":        "Most refurbs complete by early March",
         "best_weeks":     "March 1–7 (before Spring Break begins)",
+        "clothing": (
+            "T-shirts and shorts for daytime · Light jacket for evenings · "
+            "Rain poncho for afternoon showers (getting more frequent) · "
+            "Sunscreen from mid-March onwards"
+        ),
         "tip": (
             "The first week of March can be excellent — warm, Flower & Garden running, "
             "crowds still low before Spring Break hits. "
@@ -63,6 +78,11 @@ SEASON_DETAILS = {
         "park_hours":     "Extended around Easter — parks open late",
         "refurbs":        "Minimal",
         "best_weeks":     "Late April after Easter and Spring Break clear out",
+        "clothing": (
+            "Light shorts and breathable t-shirts · Rain poncho essential — "
+            "afternoon thunderstorms daily · Sunscreen and hat · "
+            "Light cardigan for heavily air-conditioned indoor venues"
+        ),
         "tip": (
             "Late April (after Easter) is underrated — warm weather, Flower & Garden in "
             "full bloom at EPCOT, and crowds noticeably lower than March. "
@@ -79,6 +99,11 @@ SEASON_DETAILS = {
         "park_hours":     "Moderate to extended",
         "refurbs":        "Minimal",
         "best_weeks":     "May 1–24 (before Memorial Day weekend)",
+        "clothing": (
+            "Light breathable clothing — shorts and moisture-wicking shirts · "
+            "Poncho or packable rain jacket for afternoon storms · "
+            "Wide-brim hat and sunscreen · Light layer for indoor AC"
+        ),
         "tip": (
             "Early May before Memorial Day is one of the most underrated times to visit. "
             "Schools are still in session across most of the US, crowds are noticeably "
@@ -95,6 +120,11 @@ SEASON_DETAILS = {
         "park_hours":     "Extended — parks often open until midnight",
         "refurbs":        "Minimal",
         "best_weeks":     "Early June (slightly less busy before summer fully kicks in)",
+        "clothing": (
+            "Lightest breathable clothing only — shorts and moisture-wicking shirts · "
+            "Poncho essential for daily storms · Wide-brim hat mandatory · "
+            "Strong SPF 50+ sunscreen · Pack a spare dry shirt — you will need it"
+        ),
         "tip": (
             "Arrive at rope drop, hit major rides first, take a midday break noon–3pm "
             "(heat and storms peak), and return for the evening session. "
@@ -112,6 +142,12 @@ SEASON_DETAILS = {
         "park_hours":     "Extended — parks often open until midnight",
         "refurbs":        "Minimal",
         "best_weeks":     "No standout week — entire month is the busiest of the year",
+        "clothing": (
+            "Minimal ultra-light clothing — feels like 100°F+ with humidity · "
+            "Moisture-wicking shirts and shorts only · Poncho essential · "
+            "Hat and SPF 50+ sunscreen mandatory · Spare shirt for afternoon · "
+            "Water shoes useful for splash areas"
+        ),
         "tip": (
             "July is the single busiest month at Walt Disney World. "
             "Rope drop is non-negotiable. Buy Lightning Lane Multi Pass every day. "
@@ -133,6 +169,11 @@ SEASON_DETAILS = {
         "park_hours":     "Extended early Aug · Moderate from mid-Aug",
         "refurbs":        "Minimal",
         "best_weeks":     "Mid to late August once schools are back in session",
+        "clothing": (
+            "Light breathable clothing — shorts and moisture-wicking shirts · "
+            "Poncho for daily storms · Hat and sunscreen · "
+            "Light cardigan for aggressive indoor AC · Slight cool-down late Aug evenings"
+        ),
         "tip": (
             "Mid-August is a transition point — crowds drop noticeably as US schools resume "
             "and the park feels much more manageable. EPCOT Food & Wine begins "
@@ -153,6 +194,11 @@ SEASON_DETAILS = {
         "park_hours":     "Short — parks close 9–10pm most nights",
         "refurbs":        "Light refurbs may begin in September",
         "best_weeks":     "Mid-September weekdays (after Labor Day, quietest of the month)",
+        "clothing": (
+            "Light shorts and breathable t-shirts — still very hot · "
+            "Poncho for daily afternoon storms · Hat and sunscreen · "
+            "Light layer for cooler evenings · Hurricane season — monitor forecasts"
+        ),
         "tip": (
             "September is widely considered the best overall month to visit Walt Disney World. "
             "Extremely low weekday crowds, short wait times, and Lightning Lane Multi Pass "
@@ -174,6 +220,11 @@ SEASON_DETAILS = {
         "park_hours":     "Moderate",
         "refurbs":        "Minimal",
         "best_weeks":     "Weekdays in October avoiding Columbus Day weekend",
+        "clothing": (
+            "T-shirts and shorts early October · Light jacket or hoodie for evenings · "
+            "Much drier — poncho less critical but worth packing · "
+            "Late October is ideal walking weather — layers are perfect"
+        ),
         "tip": (
             "October is underrated. Late October weather is arguably the best of the year — "
             "cool, dry, and comfortable all day. Food & Wine still running at EPCOT. "
@@ -194,6 +245,11 @@ SEASON_DETAILS = {
         "park_hours":     "Moderate · Extended around Thanksgiving",
         "refurbs":        "Minimal",
         "best_weeks":     "November 1–20 (before Thanksgiving crowds build)",
+        "clothing": (
+            "Light jacket or fleece for evenings and mornings — can feel chilly · "
+            "T-shirts and light trousers for mild afternoons · Layers ideal — "
+            "mornings cool off quickly after dark · Rain unlikely · No poncho needed"
+        ),
         "tip": (
             "The first three weeks of November are a genuine hidden gem. "
             "Perfect weather, low crowds, Food & Wine at EPCOT, and MVMCP starts "
@@ -214,6 +270,11 @@ SEASON_DETAILS = {
         "park_hours":     "Extended — parks often open until midnight in late December",
         "refurbs":        "Minimal",
         "best_weeks":     "December 1–14 (if you must go in December)",
+        "clothing": (
+            "Warm layers essential — lows can reach low 50s°F · Jacket or fleece required for evenings and mornings · "
+            "T-shirt or light shirt for mild afternoons · Light rain jacket · "
+            "Don't underpack — it can feel genuinely cold at park open and close"
+        ),
         "tip": (
             "December 1–14 is a relative sweet spot — holiday decorations are up, "
             "Festival of the Holidays is running at EPCOT, MVMCP is on select nights, "
